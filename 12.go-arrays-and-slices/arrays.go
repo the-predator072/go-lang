@@ -13,6 +13,10 @@ func main() {
 	// shift
 	prices = prices[1:]
 	fmt.Println(prices)
+	discountedPrices := []float64{11.12, 15.32, 145.2}
+	// MERGING TWO SLICES
+	prices = append(prices, discountedPrices...)
+	fmt.Println(prices)
 }
 
 //             STATIC ARRAYS AND SLICES
