@@ -9,6 +9,7 @@ func main() {
 
 	for _, taxRate := range taxRates {
 		priceJob := prices.New(taxRate)
+		priceJob.LoadPrices()
 		priceJob.Process()
 	}
 
