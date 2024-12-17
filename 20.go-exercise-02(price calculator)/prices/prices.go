@@ -1,59 +1,44 @@
 package prices
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strconv"
+
+	"example.com/price-calculator/conversion"
+	"example.com/price-calculator/filemanager"
 )
 
 type TaxIncludedPriceJob struct {
-	TaxRate           float64
-	InputPrices       []float64
-	TaxIncludedPrices map[string]float64
+	IOManager         filemanager.FileManager `json:"-"`
+	TaxRate           float64                 `json:"taxRate"`
+	InputPrices       []float64               `json:"inputPrices"`
+	TaxIncludedPrices map[string]string       `json:"taxIncludedPrices"`
 }
 
 func (job *TaxIncludedPriceJob) LoadPrices() {
-	file, err := os.Open("prices.txt")
+	lines, err := job.IOManager.ReadLines()
 	if err != nil {
-		fmt.Println("Couldn't read the file")
-		fmt.Println(err)
-		file.Close()
 		return
 	}
-	scanner := bufio.NewScanner(file)
-	lines := []float64{}
-	for scanner.Scan() {
-		floatPrice, err := strconv.ParseFloat(scanner.Text(), 64)
-		if err != nil {
-			fmt.Println("Failed to parse the text")
-			fmt.Println(err)
-			file.Close()
-			return
-		}
-		lines = append(lines, floatPrice)
-	}
-	err = scanner.Err()
+	floatLines, err := conversion.StrigToFloat(lines)
 	if err != nil {
-		fmt.Println("Couldn't read the file")
-		fmt.Println(err)
-		file.Close()
 		return
 	}
-	job.InputPrices = lines
+	job.InputPrices = floatLines
 }
 
 func (job *TaxIncludedPriceJob) Process() {
-	results := make(map[string]float64)
-
+	job.LoadPrices()
+	results := make(map[string]string)
 	for _, price := range job.InputPrices {
-		results[fmt.Sprintf("%.2f", price)] = price * (1 + job.TaxRate)
+		priceStr := fmt.Sprintf("%.2f", price*(1+job.TaxRate))
+		results[fmt.Sprintf("%.2f", price)] = priceStr
 	}
-	fmt.Println(results)
+	job.IOManager.WriteData(job)
 }
 
-func New(taxRate float64) *TaxIncludedPriceJob {
+func New(fm *filemanager.FileManager, taxRate float64) *TaxIncludedPriceJob {
 	return &TaxIncludedPriceJob{
-		TaxRate:     taxRate,
+		IOManager: *fm,
+		TaxRate:   taxRate,
 	}
 }
