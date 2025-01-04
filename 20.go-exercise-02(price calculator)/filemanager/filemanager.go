@@ -12,7 +12,7 @@ type FileManager struct {
 	OutputFilePath string
 }
 
-func (fm *FileManager) ReadLines() ([]string, error) {
+func (fm FileManager) ReadLines() ([]string, error) {
 	file, err := os.Open(fm.InputFilePath)
 	if err != nil {
 		fmt.Println("Couldn't read the file")
@@ -35,7 +35,7 @@ func (fm *FileManager) ReadLines() ([]string, error) {
 	return lines, nil
 }
 
-func (fm *FileManager) WriteData(data interface{}) error {
+func (fm FileManager) WriteData(data interface{}) error {
 	file, err := os.Create(fm.OutputFilePath)
 	if err != nil {
 		file.Close()
@@ -51,8 +51,8 @@ func (fm *FileManager) WriteData(data interface{}) error {
 	return nil
 }
 
-func New(inputPath, outputPath string) *FileManager {
-	return &FileManager{
+func New(inputPath, outputPath string) FileManager {
+	return FileManager{
 		InputFilePath:  inputPath,
 		OutputFilePath: outputPath,
 	}
