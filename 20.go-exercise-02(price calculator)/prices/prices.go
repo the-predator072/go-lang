@@ -27,17 +27,23 @@ func (job *TaxIncludedPriceJob) LoadPrices() error {
 	return nil
 }
 
-func (job *TaxIncludedPriceJob) Process() error {
+func (job *TaxIncludedPriceJob) Process(doneChan chan bool, errChan chan error) {
 	err := job.LoadPrices()
 	if err != nil {
-		return err
+		// return err
+		errChan <- err
+		close(errChan)
+		return
 	}
 	results := make(map[string]string)
 	for _, price := range job.InputPrices {
 		priceStr := fmt.Sprintf("%.2f", price*(1+job.TaxRate))
 		results[fmt.Sprintf("%.2f", price)] = priceStr
 	}
-	return job.IOManager.WriteData(job)
+	fmt.Println(results)
+	job.IOManager.WriteData(job)
+	doneChan <- true
+	close(doneChan)
 }
 
 func New(iom iomanager.IOManager, taxRate float64) *TaxIncludedPriceJob {
