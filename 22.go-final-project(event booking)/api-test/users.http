@@ -1,0 +1,19 @@
+@baseUrl = http://localhost:8080/
+
+### User Signup ###
+POST {{baseUrl}}signup
+Content-Type: application/json
+// Request Body
+{
+    "email" :"test@gmail.com",
+    "password" : "test@123"
+}
+
+### User login ###
+POST {{baseUrl}}login
+Content-Type: application/json
+// Request Body
+{
+    "email" :"test@gmail.com",
+    "password" : "test@123"
+}

@@ -1,0 +1,30 @@
+@baseUrl = http://localhost:8080/
+### Create Event ###
+POST {{baseUrl}}events
+Content-Type: application/json
+// Request Body
+{
+    "name" : "Vikas Negi",
+	"description": "Test Event",
+	"location": "Chandigarh",
+	"dateTime" : "2025-01-04T20:45:35.772Z"    
+}
+### Get Events ###
+GET {{baseUrl}}events
+
+### Get event by ID ###
+GET {{baseUrl}}events
+
+### Update Event ###
+PUT {{baseUrl}}events/2 
+Content-Type: application/json
+// Request Body
+{
+    "name": "Updated Event",
+    "description" : "updated description",
+    "location" : "Updated Location",
+    "dateTime" : "2025-01-05T17:52:20.587Z"
+}
+
+### Delete Event ###
+DELETE {{baseUrl}}events/2
